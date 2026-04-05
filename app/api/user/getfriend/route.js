@@ -28,7 +28,6 @@ export async function GET(req) {
         return Response.json({ friend });
 
     } catch (err) {
-        console.log(err);
         return Response.json({ error: "Server Error" }, { status: 500 });
     }
 }

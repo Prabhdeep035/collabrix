@@ -3,6 +3,7 @@ import { getUserFromToken } from "../../../../lib/auth";
 import { cookies } from "next/headers";
 import Chat from "../../../../models/Chat";
 import  Message from "../../../../models/Message"
+import { pusherServer } from "@/lib/pusher";
 
 export async function POST(req){
     try{
@@ -22,6 +23,12 @@ export async function POST(req){
             sender:UserId,
             content:message
         })
+        // pusher
+        await pusherServer.trigger(
+            `chat-${chatId}`,
+            "new-message",
+            messageObj
+            );
         if(messageObj){
             return Response.json({messageObj}) 
         }
@@ -46,7 +53,6 @@ export async function GET(req){
 
         const { searchParams } = new URL(req.url);
         const chatId = searchParams.get("chatId"); 
-        console.log("chatId:",chatId)       
 
         const messages=await Message.find({chatId:chatId}).sort({ createdAt: 1 })
         return Response.json({messages})

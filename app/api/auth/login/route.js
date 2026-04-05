@@ -34,7 +34,6 @@ export async function POST(req){
 
         return Response.json({message:"Login Successful"})
     }catch(err){
-        console.log(err)
         return Response.json({error:"Server Error"},{status:"500"})
     }
 }

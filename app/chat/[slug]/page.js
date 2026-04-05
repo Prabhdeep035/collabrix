@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
+import Pusher from "pusher-js";
 
 export default function Dashboard() {
 
@@ -132,7 +133,6 @@ export default function Dashboard() {
         })
         if(res.ok){
             const data=await res.json()
-            console.log(data.friend)
             setChatFriend(data.friend);
         }
     }
@@ -154,7 +154,6 @@ export default function Dashboard() {
     }
 
     const fetchAllMessages=async()=>{
-        console.log(chat._id)
         const res=await fetch(`/api/chat/handleMessage?chatId=${chat._id}`,{
             method:"GET",
             credentials:"include"
@@ -177,6 +176,32 @@ export default function Dashboard() {
         if (!chat?._id) return;
         fetchAllMessages()
     },[chat])
+
+    // pusher 
+    useEffect(() => {
+        if (!chat?._id) return;
+
+        const pusher = new Pusher(
+            process.env.NEXT_PUBLIC_PUSHER_KEY,
+            {
+            cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+            }
+        );
+
+        const channel = pusher.subscribe(`chat-${chat._id}`);
+
+        channel.bind("new-message", (newMessage) => {
+            setAllMessages((prev) => {
+            if (prev.find(msg => msg._id === newMessage._id)) return prev;
+            return [...prev, newMessage];
+            });
+        });
+
+        return () => {
+            pusher.unsubscribe(`chat-${chat._id}`);
+            pusher.disconnect();
+        };
+        }, [chat]);
     
     return (
         <>
