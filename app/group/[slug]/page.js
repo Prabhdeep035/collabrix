@@ -10,7 +10,7 @@ import Pusher from "pusher-js";
 export default function Dashboard() {
 
     const params = useParams();
-    const friendId = params.slug;
+    const groupId = params.slug;
 
     const router= useRouter()
 
@@ -24,8 +24,10 @@ export default function Dashboard() {
     const [requests,setRequests]=useState([])
     const [allFriends,setAllFriends]=useState([])
     const [chatFriend,setChatFriend]=useState([])
+    const [groupChat,setGroupChat]=useState([])
     const [chat,setChat]=useState([])
     const [message,setMessage]=useState("")
+    const [avatar, setAvatar] = useState("")    
     const [allMessages,setAllMessages]=useState([])
     const [group,setGroup] =useState({
         name:"",
@@ -81,12 +83,12 @@ export default function Dashboard() {
     }
 
     const handleSend=async()=>{
-        const res=await fetch("/api/chat/handleMessage",{
+        const res=await fetch("/api/group/handleMessages",{
             method:"POST",
             credentials:"include",
             body:JSON.stringify({
                 message:message,
-                chatId:chat._id
+                chatId:groupChat._id,
             }),
             headers:{
                 "Content-Type":"application/json"
@@ -95,8 +97,24 @@ export default function Dashboard() {
         if(res.ok){
             setMessage("")
             toast.success("Message Send!")
+            fetchAllMessages()
         }
-    } 
+    }
+
+    const addAvatar = async () => {
+        const res = await fetch("/api/group/getGroup", {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify({ url: avatar ,id: groupChat._id}),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        if (res.ok) {
+            toast.success("Profile photo added!")
+            setAvatar("")
+        }
+    }
     
     const makeGroup=async()=>{
         if(!group.name ){
@@ -155,35 +173,21 @@ export default function Dashboard() {
         }
     }
     
-    const fetchFriend=async()=>{
-        const res=await fetch(`/api/user/getfriend?id=${friendId}`,{
+    const fetchGroup=async()=>{
+        const res=await fetch(`/api/group/getGroup?id=${groupId}`,{
             method:"GET",
             credentials:"include",
         })
         if(res.ok){
             const data=await res.json()
-            setChatFriend(data.friend);
+            console.log(data.Group)
+            setGroupChat(data.Group);
         }
     }
     
-    
-    const fetchChat=async()=>{
-        const res=await fetch("/api/chat",{
-            method:"POST",
-            credentials:"include",
-            body:JSON.stringify({friendId:friendId}),
-            headers:{
-                "Content-Type":"application/json"
-            }
-        })
-        if(res.ok){
-            const data=await res.json()
-            setChat(data.chat)
-        }
-    }
 
     const fetchAllMessages=async()=>{
-        const res=await fetch(`/api/chat/handleMessage?chatId=${chat._id}`,{
+        const res=await fetch(`/api/group/handleMessages?chatId=${groupChat._id}`,{
             method:"GET",
             credentials:"include"
         })
@@ -192,7 +196,7 @@ export default function Dashboard() {
             setAllMessages(data.messages)
         }
     }
-
+    
     const fetchGroups=async()=>{
         const res=await fetch("/api/group",{
             method:"GET",
@@ -208,40 +212,37 @@ export default function Dashboard() {
         fetchUser()
         fetchRequest()
         fetchFriends()
-        fetchFriend()
-        fetchChat()
         fetchGroups()
+        fetchGroup()
+        fetchAllMessages()
     }, [])
 
     useEffect(()=>{
-        if (!chat?._id) return;
+        if (!groupChat?._id) return;
         fetchAllMessages()
-    },[chat])
-    
+    },[groupChat])
+
     useEffect(() => {
-        if (!chat?._id) return;
+        if (!groupChat?._id) return;
 
-        const pusher = new Pusher(
-            process.env.NEXT_PUBLIC_PUSHER_KEY,
-            {
+        const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
             cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
-            }
-        );
+        });
 
-        const channel = pusher.subscribe(`chat-${chat._id}`);
+        const channel = pusher.subscribe(`chatId-${groupChat._id}`);
 
         channel.bind("new-message", (newMessage) => {
             setAllMessages((prev) => {
-            if (prev.find(msg => msg._id === newMessage._id)) return prev;
-            return [...prev, newMessage];
+                if (prev.find((m) => m._id === newMessage._id)) return prev;
+                return [...prev, newMessage];
             });
         });
 
         return () => {
-            pusher.unsubscribe(`chat-${chat._id}`);
-            pusher.disconnect();
+            channel.unbind_all();
+            channel.unsubscribe();
         };
-        }, [chat]);
+    }, [groupChat]);
     
     return (
         <>
@@ -352,18 +353,19 @@ export default function Dashboard() {
                             allgroups.map((group) => {
                                 return (
                                     <div onClick={()=>{router.push(`/group/${group._id}`)}} key={group._id} className="h-20 flex bg-gray-400 rounded-2xl shadow-2xl hover:opacity-90">
-                                        <div className={`bg-black h-15 w-1/7 rounded-full m-2 flex justify-center items-center`}>
-                                            🙍‍♂️
-                                        </div>
+                                        <div className={`bg-black h-15 w-1/7 rounded-full m-2 ${group.avatar?"":"text-2xl flex justify-center items-center"}`}>
+                                            {group.avatar?<img src={group.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" />:
+                                                "🙍‍♂️"
+                                            }
+                                            </div>
                                         <div className="w-full h-15 m-2">
                                             <h1 className="text-black font-bold text-xl">@{group.name}</h1>
                                         </div>
                                     </div>
                                 )
                             })}
-                    </div>
-                    <div
-                        className={`absolute right-10 bottom-25 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-2xl border border-white/10transform transition-all duration-500 ease-in-out
+                    </div>  
+                     <div className={`absolute right-10 bottom-25 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-2xl border border-white/10transform transition-all duration-500 ease-in-out
                             ${show.group
                                 ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
 
@@ -417,14 +419,36 @@ export default function Dashboard() {
                 </div>
                 <div className="w-2/3 bg-green-300 rounded-t-2xl">
                     <div className="flex gap-5 items-center h-20 bg-stone-500 rounded-t-2xl mt-3 ml-3 mr-3 shadow-2xl">
-                        <div className= {`bg-white h-15 w-15 ml-3 rounded-full ${chatFriend.avatar?"":"flex items-center justify-center text-2xl"}`} >
-                            {chatFriend.avatar?<img src={chatFriend.avatar} className="w-full h-full object-cover rounded-full" alt="avatar"/>
-                            : 
-                                "🙍‍♂️"}
+                        <div className={`bg-white h-15 w-15 ml-3 rounded-full ${groupChat.avatar ? "" : "flex items-center justify-center text-2xl"}`} >
+                            <button onClick={() => { setShow({ ...show, avatar: !show.avatar }) }} className={`bg-white h-15 w-15 rounded-full ${groupChat.avatar ? "" : "flex items-center justify-center text-2xl"}`}>{groupChat.avatar ? <img src={groupChat.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" /> : "+"}</button>
                         </div>
-                        <h1 className="text-xl ">{chatFriend.username}</h1>
+                        <h1 className="text-xl ">{groupChat.name}</h1>
                     </div>
                     <div className="relative flex flex-col rounded-b-2xl bg-white h-160 ml-3 mr-3 shadow-2xl">
+                        <div
+                            className={`absolute left-10 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-2xl border border-white/10transform transition-all duration-500 ease-in-out
+                                ${show.avatar
+                                    ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
+
+                            <div className="px-6 py-4 border-b border-white/10">
+                                <h1 className="text-xl font-semibold text-white">
+                                    Avatar
+                                </h1>
+                                <p className="text-sm text-emerald-200 mt-1">
+                                    Add your profile photo...
+                                </p>
+                            </div>
+                            <div className="p-6 flex flex-col gap-4">
+                                <input onChange={(e) => { setAvatar(e.target.value) }} value={avatar} type="text" placeholder="Enter url of your profile photo..." className="w-full px-4 py-2 rounded-lg 
+                                    bg-white/10 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-emerald-400"
+                                />
+
+                                <button onClick={() => { addAvatar() }} className="w-full py-2 rounded-lg bg-emerald-500 
+                                hover:bg-emerald-400 text-white font-medium transition">
+                                    Set Avatar
+                                </button>
+                            </div>
+                        </div>
                         <div className="h-140 m-2 flex flex-col gap-2 text-black overflow-y-auto bg-white p-4">
                             {allMessages.length === 0 ? (
                                 <div className="flex flex-col justify-center items-center h-full text-2xl font-bold">
@@ -434,21 +458,41 @@ export default function Dashboard() {
                                 </div>
                             ) : (
                                 allMessages.map((msg) => {
-                                const isMe = msg.sender === User?._id;
+                                const isMe = msg.sender._id === User?._id;
 
                                 return (
                                     <div
                                         key={msg._id}
-                                        className={`p-2 rounded-lg max-w-[70%] break-all whitespace-pre-wrap overflow-hidden ${
-                                            isMe
-                                                ? "bg-blue-500 text-white self-end"
-                                                : "bg-gray-200 self-start"
+                                        className={`flex gap-2 max-w-[75%] ${
+                                            isMe ? "self-end flex-row-reverse" : "self-start"
                                         }`}
                                     >
-                                        {msg.content}
+                                        <img
+                                            src={msg.sender.avatar}
+                                            alt={msg.sender.username}
+                                            className="w-8 h-8 rounded-full shrink-0"
+                                        />
+
+                                        <div className="flex flex-col min-w-0">
+                                            {!isMe && (
+                                                <span className="text-xs text-gray-500 mb-1">
+                                                    {msg.sender.username}
+                                                </span>
+                                            )}
+
+                                            <div
+                                                className={`p-2 rounded-lg break-all whitespace-pre-wrap overflow-hidden ${
+                                                    isMe
+                                                        ? "bg-blue-500 text-white"
+                                                        : "bg-gray-200 text-black"
+                                                }`}
+                                            >
+                                                {msg.content}
+                                            </div>
+                                        </div>
                                     </div>
                                 );
-                            })
+                                })
                             )}
                         </div>
                         <div className="m-3 flex mt-auto rounded-2xl shadow-xl border-black border">

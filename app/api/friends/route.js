@@ -18,7 +18,7 @@ export async function GET() {
             requester: UserId,
             status: "accepted"
         })
-            .populate("recipient", "username avatar");
+            .populate("recipient", "username avatar _id");
         if (friends) {
             return Response.json({ friends })
         }

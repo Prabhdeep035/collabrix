@@ -29,6 +29,10 @@ const ChatSchema = new mongoose.Schema(
   lastMessage: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Message"
+  },
+  avatar:{
+        type:String,
+        default:""
   }
 
 },
