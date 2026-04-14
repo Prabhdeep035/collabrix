@@ -37,7 +37,7 @@ export default function Navbar(){
 
     return(
     <>
-        <div className="h-16 bg-emerald-700 flex items-center px-3 shadow-md">
+        <div className="h-15 bg-emerald-700 flex items-center px-3 shadow-md">
             <h1 onClick={()=>{router.push("/dashboard")}} className="font-bold text-2xl text-white cursor-pointer tracking-wide hover:opacity-80 transition">Collabrix</h1>
             <div className="ml-auto p-3 item-center flex gap-4">
                     <div className={` bg-black h-10 w-10 rounded-full border border-white overflow-hidden ${User.avatar?"":"text-2xl flex justify-center items-center"}`}>
