@@ -214,13 +214,13 @@ export default function Dashboard() {
             <div className=" bg-emerald-700 flex flex-row h-188 min-w-fit gap-4">
 
 
-                <div className="relative w-1/3 bg-green-300 rounded-t-2xl ml-10">
+                <div className="relative w-1/3 bg-gray-100 rounded-t-2xl ml-10">
                     <div className="flex">
                         <h1 className="p-2 mt-3 font-semibold text-2xl text-black">Chats</h1>
                         <button onClick={() => {
                             setShow({...show,add:false,notify:!show.notify})
                             
-                        }} className="ml-auto m-4 text-black h-8 rounded-2xl shadow-2xl">
+                        }} className="ml-auto m-4 text-black h-8 rounded-2xl shadow-md">
                             <lord-icon
                                 src="https://cdn.lordicon.com/fqbvgezn.json"
                                 colors="primary:#121331,secondary:#109121"
@@ -228,7 +228,7 @@ export default function Dashboard() {
                         </button>
                         <button onClick={() => {
                             setShow({...show,add:!show.add,notify:false})
-                        }} className=" m-4 text-black h-8 rounded-2xl shadow-2xl">
+                        }} className=" m-4 text-black h-8 rounded-2xl shadow-md">
                             <lord-icon
                                 src="https://cdn.lordicon.com/nvsfzbop.json"
                                 colors="primary:#121331,secondary:#109121"
@@ -237,7 +237,7 @@ export default function Dashboard() {
                     </div>
 
                     <div
-                        className={`absolute right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-2xl border border-white/10transform transition-all duration-500 ease-in-out
+                        className={`absolute right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
                             ${show.add
                                 ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
                         <div className="px-6 py-4 border-b border-white/10">
@@ -256,7 +256,7 @@ export default function Dashboard() {
                                         <div key={req._id} className="flex h-10 w-full bg-white rounded-2xl">
                                         <h1 className=" m-2 text-black">@{req.requester.username}</h1>
                                         <div className="ml-auto mt-1 mr-3 flex gap-3">
-                                            <button onClick={()=>{handleAccept(req._id)}} className="h-8 w-8  flex items-center justify-center bg-green-300 rounded-full"><lord-icon
+                                            <button onClick={()=>{handleAccept(req._id)}} className="h-8 w-8  flex items-center justify-center bg-gray-100 rounded-full"><lord-icon
                                                 src="https://cdn.lordicon.com/lvrxlmju.json"
                                                 trigger="click"
                                                 colors="primary:#000000"
@@ -270,7 +270,7 @@ export default function Dashboard() {
                         
                     </div>
                     <div
-                        className={`absolute right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-2xl border border-white/10transform transition-all duration-500 ease-in-out
+                        className={`absolute right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
                             ${show.notify
                                 ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
                         
@@ -300,7 +300,7 @@ export default function Dashboard() {
                         {allFriends.length===0?<div className="text-black text-2xl font-bold flex justify-center items-center h-150 ">Send request and make new friends</div>:
                             allFriends.map((friend)=>{
                                 return(
-                                    <div onClick={()=>{router.push(`/chat/${friend.recipient._id}`) }} key={friend._id} className="h-20 flex bg-gray-400 rounded-2xl shadow-2xl hover:opacity-90">
+                                    <div onClick={()=>{router.push(`/chat/${friend.recipient._id}`) }} key={friend._id} className="h-20 flex bg-white rounded-2xl shadow-md hover:opacity-90">
                                         <div className={`bg-black h-15 w-1/7 rounded-full m-2 ${friend.recipient.avatar?"":"text-2xl flex justify-center items-center"}`}>
                                             {friend.recipient.avatar?<img src={friend.recipient.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" />:
                                                 "🙍‍♂️"
@@ -314,8 +314,8 @@ export default function Dashboard() {
                             })}
                     </div>
                 </div>
-                <div className="w-2/3 bg-green-300 rounded-t-2xl">
-                    <div className="flex gap-5 items-center h-20 bg-stone-500 rounded-t-2xl mt-3 ml-3 mr-3 shadow-2xl">
+                <div className="w-2/3 bg-gray-100 rounded-t-2xl">
+                    <div className="flex gap-5 items-center h-20 bg-emerald-700 rounded-t-2xl mt-3 ml-3 mr-3 shadow-md">
                         <div className= {`bg-white h-15 w-15 ml-3 rounded-full ${chatFriend.avatar?"":"flex items-center justify-center text-2xl"}`} >
                             {chatFriend.avatar?<img src={chatFriend.avatar} className="w-full h-full object-cover rounded-full" alt="avatar"/>
                             : 
@@ -323,7 +323,7 @@ export default function Dashboard() {
                         </div>
                         <h1 className="text-xl ">{chatFriend.username}</h1>
                     </div>
-                    <div className="relative flex flex-col rounded-b-2xl bg-[#1e1e1e] h-160 ml-3 mr-3 shadow-2xl">
+                    <div className="relative flex flex-col rounded-b-2xl bg-[#1e1e1e] h-160 ml-3 mr-3 shadow-md">
                         <div className="h-10 w-full flex bg-[#1e1e1e] text-white">
                             <h1 className="text-2xl font-bold">Code here</h1>
                             <div className="ml-auto">

@@ -27,6 +27,7 @@ export default function Register() {
             }
         })
         if(res.ok){
+            router.push("/dashboard")
             toast.success("Registered Successfully!");
         }
         else{
@@ -55,7 +56,7 @@ export default function Register() {
     return (
         <>
             <div className="bg-white h-screen w-screen flex justify-center items-center">
-                <div className="border relative bg-white rounded-2xl shadow-gray-500 shadow-2xl h-120 w-200 y-10 flex">
+                <div className="border relative bg-white rounded-2xl shadow-gray-500 shadow-md h-120 w-200 y-10 flex">
 
                     <div className="flex w-full h-full">
 
@@ -75,7 +76,7 @@ export default function Register() {
                             <div className="flex flex-col h-80 w-70 items-center">
                                 <h1 className="text-3xl text-black font-bold ">Create Account</h1>
                                 <form className="flex flex-col mt-10 gap-4">
-                                    <input value={register.name} onChange={(e)=>{setRegister({...register,name:e.target.value})}} className="p-2 h-10 w-70 bg-gray-200  text-black shadow-xl" type="text" placeholder="Name" />
+                                    <input value={register.name} onChange={(e)=>{setRegister({...register,name:e.target.value})}} className="p-2 h-10 w-70 bg-gray-200  text-black shadow-xl" type="text" placeholder="Username" />
                                     <input value={register.email} onChange={(e)=>{setRegister({...register,email:e.target.value})}} className="p-2 h-10 w-70 bg-gray-200  text-black shadow-xl" type="email" placeholder="Email" />
                                     <input value={register.password} onChange={(e)=>{setRegister({...register,password:e.target.value})}} className="p-2 h-10 w-70 bg-gray-200  text-black shadow-xl" type="password" placeholder="Password" />
                                     <button onClick={()=>{handleRegister()}} className="p-2 h-10 w-35 ml-17.5 bg-emerald-700 rounded-full text-white">SIGN UP</button>

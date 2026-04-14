@@ -3,6 +3,7 @@ import { getUserFromToken } from "../../../../lib/auth";
 import { cookies } from "next/headers";
 import  Message from "../../../../models/Message"
 import { pusherServer } from "@/lib/pusher";
+import Chat from "../../../../models/Chat"
 
 export async function POST(req){
     try{
@@ -22,6 +23,13 @@ export async function POST(req){
             sender:UserId,
             content:message
         })
+
+        const chat=await Chat.findOneAndUpdate(
+            {chatId},
+            {$set:{lastMessage:messageObj._id}},
+            {new:true}
+        );
+
         await pusherServer.trigger(
             `chat-${chatId}`,
             "new-message",

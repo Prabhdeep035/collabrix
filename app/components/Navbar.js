@@ -37,16 +37,16 @@ export default function Navbar(){
 
     return(
     <>
-        <div className="h-15 bg-emerald-700 flex">
-            <h1 onClick={()=>{router.push("/dashboard")}} className="font-bold text-2xl p-3">Collabrix</h1>
-            <div className="ml-auto p-3 flex gap-4">
-                    <div className={` bg-black h-10 w-10 rounded-full ${User.avatar?"":"text-2xl flex justify-center items-center"}`}>
+        <div className="h-16 bg-emerald-700 flex items-center px-3 shadow-md">
+            <h1 onClick={()=>{router.push("/dashboard")}} className="font-bold text-2xl text-white cursor-pointer tracking-wide hover:opacity-80 transition">Collabrix</h1>
+            <div className="ml-auto p-3 item-center flex gap-4">
+                    <div className={` bg-black h-10 w-10 rounded-full border border-white overflow-hidden ${User.avatar?"":"text-2xl flex justify-center items-center"}`}>
                         {User.avatar?<img src={User.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" />:
                             "🙍‍♂️"
                         }
                     </div>
                 
-                <button onClick={()=>{handleLogout()}} className="h-9 w-30 bg-emerald-500 border rounded-2xl hover:bg-emerald-400 text-white font-medium transition">Logout</button>
+                <button onClick={()=>{handleLogout()}} className="h-9 w-30 bg-white text-emerald-600 border rounded-2xl hover:bg-gray-100  font-medium transition">Logout</button>
             </div>
         </div>
     </>

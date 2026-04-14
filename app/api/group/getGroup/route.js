@@ -19,7 +19,7 @@ export async function GET(req) {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
 
-        const Group = await Chat.findById(id).select("name avatar");
+        const Group = await Chat.findById(id).select("name avatar lastMessage")
 
         if (!Group) {
             return Response.json({ error: "No such user found" }, { status: 404 });

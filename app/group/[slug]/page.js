@@ -33,6 +33,7 @@ export default function Dashboard() {
         name:"",
         members:[]
     })
+    const [search, setSearch] = useState("");
     const [allgroups,setAllgroups]=useState([])
 
     const sendRequest = async () => {
@@ -88,7 +89,7 @@ export default function Dashboard() {
             credentials:"include",
             body:JSON.stringify({
                 message:message,
-                chatId:groupChat._id,
+                chatId:groupId,
             }),
             headers:{
                 "Content-Type":"application/json"
@@ -180,14 +181,13 @@ export default function Dashboard() {
         })
         if(res.ok){
             const data=await res.json()
-            console.log(data.Group)
             setGroupChat(data.Group);
         }
     }
     
 
     const fetchAllMessages=async()=>{
-        const res=await fetch(`/api/group/handleMessages?chatId=${groupChat._id}`,{
+        const res=await fetch(`/api/group/handleMessages?chatId=${groupId}`,{
             method:"GET",
             credentials:"include"
         })
@@ -247,16 +247,16 @@ export default function Dashboard() {
     return (
         <>
             <Navbar />
-            <div className=" bg-emerald-700 flex flex-row h-188 min-w-fit gap-4">
+            <div className=" bg-emerald-700 flex flex-row h-167 min-w-fit gap-4">
 
 
-                <div className="relative w-1/3 bg-green-300 rounded-t-2xl ml-10 flex flex-col">
+                <div className="relative w-1/3 bg-gray-100 rounded-t-2xl ml-10 flex flex-col">
                     <div className="flex">
                         <h1 className="p-2 mt-3 font-semibold text-2xl text-black">Chats</h1>
                         <button onClick={() => {
                             setShow({...show,add:false,notify:!show.notify})
                             
-                        }} className="ml-auto m-4 text-black h-8 rounded-2xl shadow-2xl">
+                        }} className="ml-auto m-4 text-black h-8 rounded-2xl shadow-md">
                             <lord-icon
                                 src="https://cdn.lordicon.com/fqbvgezn.json"
                                 colors="primary:#121331,secondary:#109121"
@@ -264,7 +264,7 @@ export default function Dashboard() {
                         </button>
                         <button onClick={() => {
                             setShow({...show,add:!show.add,notify:false})
-                        }} className=" m-4 text-black h-8 rounded-2xl shadow-2xl">
+                        }} className=" m-4 text-black h-8 rounded-2xl shadow-md">
                             <lord-icon
                                 src="https://cdn.lordicon.com/nvsfzbop.json"
                                 colors="primary:#121331,secondary:#109121"
@@ -273,7 +273,7 @@ export default function Dashboard() {
                     </div>
 
                     <div
-                        className={`absolute z-50 right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-2xl border border-white/10transform transition-all duration-500 ease-in-out
+                        className={`absolute z-50 right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
                             ${show.add
                                 ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
                         <div className="px-6 py-4 border-b border-white/10">
@@ -292,7 +292,7 @@ export default function Dashboard() {
                                         <div key={req._id} className="flex h-10 w-full bg-white rounded-2xl">
                                         <h1 className=" m-2 text-black">@{req.requester.username}</h1>
                                         <div className="ml-auto mt-1 mr-3 flex gap-3">
-                                            <button onClick={()=>{handleAccept(req._id)}} className="h-8 w-8  flex items-center justify-center bg-green-300 rounded-full"><lord-icon
+                                            <button onClick={()=>{handleAccept(req._id)}} className="h-8 w-8  flex items-center justify-center bg-gray-100 rounded-full"><lord-icon
                                                 src="https://cdn.lordicon.com/lvrxlmju.json"
                                                 trigger="click"
                                                 colors="primary:#000000"
@@ -306,7 +306,7 @@ export default function Dashboard() {
                         
                     </div>
                     <div
-                        className={`absolute z-50 right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-2xl border border-white/10transform transition-all duration-500 ease-in-out
+                        className={`absolute z-50 right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
                             ${show.notify
                                 ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
                         
@@ -330,42 +330,42 @@ export default function Dashboard() {
                         </div>
                     </div>
                     <div className="m-2 flex p-2 bg-emerald-100 border-none h-10 rounded-2xl">
-                        🔍<input className="p-2 w-full text-black border-none outline-none" type="text" placeholder="Search or start a new chat" />
+                        🔍<input onChange={(e)=>{setSearch(e.target.value)}} className="p-2 w-full text-black border-none outline-none" type="text" placeholder="Search or start a new chat" />
                     </div>
-                    <div className=" m-4 flex gap-4 flex-col overflow-y-auto">
-                        {allFriends.length===0?<div className="text-black text-2xl font-bold flex justify-center items-center h-150 ">Send request and make new friends</div>:
-                            allFriends.map((friend)=>{
-                                return(
-                                    <div onClick={()=>{router.push(`/chat/${friend.recipient._id}`) }} key={friend._id} className="h-20 flex bg-gray-400 rounded-2xl shadow-2xl hover:opacity-90">
-                                        <div className={`bg-black h-15 w-1/7 rounded-full m-2 ${friend.recipient.avatar?"":"text-2xl flex justify-center items-center"}`}>
-                                            {friend.recipient.avatar?<img src={friend.recipient.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" />:
-                                                "🙍‍♂️"
+                    <div className=" m-4 h-full flex flex-col gap-4 overflow-y-auto  scrollbar scrollbar-thin scrollbar-thumb-orange-500 scrollbar-track-gray-900">
+                        {allFriends.length === 0 ? <div className="text-black text-2xl font-bold flex justify-center items-center h-[150px] ">Send request and make new friends</div> :
+                            allFriends.map((friend) => {
+                                return (
+                                    friend.recipient.username.toLowerCase().includes(search.toLowerCase())?
+                                    <div onClick={() => { router.push(`/chat/${friend.recipient._id}`) }} key={friend._id} className="h-20 cursor-pointer flex bg-white rounded-2xl shadow-md hover:bg-gray-100">
+                                        <div className={`bg-green-100 border-2 border-green-500 h-15 w-15 rounded-full m-2 ${friend.recipient.avatar ? "" : "text-2xl flex justify-center items-center"}`}>
+                                            {friend.recipient.avatar ? <img src={friend.recipient.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" /> :
+                                                <span className="text-black font-serif">{friend.recipient.username.toUpperCase()[0]}</span>
                                             }
-                                            </div>
-                                        <div className="w-full h-15 m-2">
+                                        </div>
+                                        <div className="flex items-center">
                                             <h1 className="text-black font-bold text-xl">@{friend.recipient.username}</h1>
                                         </div>
-                                    </div>
+                                    </div>:null
                                 )
                             })}
-                            <span className="text-black text-2xl font-bold">Groups</span>
+                        <span className="text-black text-2xl font-bold">Groups</span>
                         {allgroups.length === 0 ? <div className="text-black text-2xl font-bold flex justify-center items-center h-150 ">Make groups with friends</div> :
                             allgroups.map((group) => {
                                 return (
-                                    <div onClick={()=>{router.push(`/group/${group._id}`)}} key={group._id} className="h-20 flex bg-gray-400 rounded-2xl shadow-2xl hover:opacity-90">
-                                        <div className={`bg-black h-15 w-1/7 rounded-full m-2 ${group.avatar?"":"text-2xl flex justify-center items-center"}`}>
-                                            {group.avatar?<img src={group.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" />:
-                                                "🙍‍♂️"
-                                            }
-                                            </div>
-                                        <div className="w-full h-15 m-2">
+                                    group.name.toLowerCase().includes(search.toLowerCase())?
+                                    <div onClick={()=>{router.push(`/group/${group._id}`)}} key={group._id} className="h-20  cursor-pointer flex bg-white rounded-2xl shadow-md hover:bg-gray-100">
+                                        <div className={`bg-green-100 border-2 border-green-500 h-15 w-15 rounded-full m-2 flex justify-center items-center`}>
+                                            <h1 className="text-black text-2xl font-serif">{group.name.toUpperCase()[0]}</h1>
+                                        </div>
+                                        <div className="flex items-center">
                                             <h1 className="text-black font-bold text-xl">@{group.name}</h1>
                                         </div>
-                                    </div>
+                                    </div>:null
                                 )
                             })}
                     </div>  
-                     <div className={`absolute right-10 bottom-25 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-2xl border border-white/10transform transition-all duration-500 ease-in-out
+                     <div className={`absolute right-10 bottom-25 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
                             ${show.group
                                 ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
 
@@ -381,7 +381,7 @@ export default function Dashboard() {
                             <input value={group.name} onChange={(e)=>{setGroup({...group,name:e.target.value})}} type="text" placeholder="Enter Group Name..." className="w-full px-4 py-2 rounded-lg 
                                 bg-white/10 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-emerald-400"
                             />
-                            <div className="bg-white p-2 h-30 rounded-2xl">
+                            <div className="bg-white p-2 h-30 rounded-2xl flex flex-col overflow-y-auto scroll-smooth">
                                 {allFriends.length === 0 ? <div className="text-black text-2xl font-bold flex justify-center items-center h-150 ">Send request and make new friends</div> :
                                     allFriends.map((friend) => {
                                         return (
@@ -410,23 +410,27 @@ export default function Dashboard() {
                             </button>
                         </div>
                     </div>
-                    <button onClick={() => { setShow({ ...show, group: !show.group }) }} className="h-20 w-20 bottom-2 right-2 absolute rounded-3xl bg-emerald-600 shadow-2xl flex justify-center items-center">
-                                    <lord-icon 
+                    <button onClick={() => { setShow({ ...show, group: !show.group }) }} className="h-20 w-20 bottom-2 right-2 absolute rounded-3xl bg-emerald-600 shadow-md flex justify-center items-center 
+                    hover:bg-emerald-400 text-white font-medium transition"> 
+                                <lord-icon 
                                     src="https://cdn.lordicon.com/cfoaotmk.json"
                                     colors="primary:#000000,secondary:#000000"
                                 style={{ width: "70px", height: "70px" }} />
                     </button>
                 </div>
-                <div className="w-2/3 bg-green-300 rounded-t-2xl">
-                    <div className="flex gap-5 items-center h-20 bg-stone-500 rounded-t-2xl mt-3 ml-3 mr-3 shadow-2xl">
+                <div className="w-2/3 bg-gray-100 rounded-t-2xl">
+                    <div className="flex gap-5 items-center h-20 bg-emerald-700 rounded-t-2xl mt-3 ml-3 mr-3 shadow-md">
                         <div className={`bg-white h-15 w-15 ml-3 rounded-full ${groupChat.avatar ? "" : "flex items-center justify-center text-2xl"}`} >
-                            <button onClick={() => { setShow({ ...show, avatar: !show.avatar }) }} className={`bg-white h-15 w-15 rounded-full ${groupChat.avatar ? "" : "flex items-center justify-center text-2xl"}`}>{groupChat.avatar ? <img src={groupChat.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" /> : "+"}</button>
+                            <button onClick={() => { setShow({ ...show, avatar: !show.avatar }) }} className={`bg-white h-15 w-15 rounded-full ${groupChat.avatar ? "" : "flex items-center justify-center text-2xl"}`}>
+                                {groupChat.avatar ? <img src={groupChat.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" /> :
+                                 "🙍‍♂️"}
+                                 </button>
                         </div>
                         <h1 className="text-xl ">{groupChat.name}</h1>
                     </div>
-                    <div className="relative flex flex-col rounded-b-2xl bg-white h-160 ml-3 mr-3 shadow-2xl">
+                    <div className="relative flex flex-col rounded-b-2xl bg-white h-143 ml-3 mr-3 shadow-md">
                         <div
-                            className={`absolute left-10 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-2xl border border-white/10transform transition-all duration-500 ease-in-out
+                            className={`absolute left-10 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
                                 ${show.avatar
                                     ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
 
@@ -483,7 +487,7 @@ export default function Dashboard() {
                                             <div
                                                 className={`p-2 rounded-lg break-all whitespace-pre-wrap overflow-hidden ${
                                                     isMe
-                                                        ? "bg-blue-500 text-white"
+                                                        ? "bg-emerald-500 text-white"
                                                         : "bg-gray-200 text-black"
                                                 }`}
                                             >
@@ -495,10 +499,10 @@ export default function Dashboard() {
                                 })
                             )}
                         </div>
-                        <div className="m-3 flex mt-auto rounded-2xl shadow-xl border-black border">
-                            <input value={message} onChange={(e)=>{setMessage(e.target.value)}} className="p-2 w-full text-black rounded-l-2xl bg-green-100 border-none outline-none" placeholder="Send a message" type="text" />
+                        <form onSubmit={(e)=>{e.preventDefault()}} className="m-3 flex mt-auto rounded-2xl shadow-xl border-black border">
+                            <textarea value={message} onChange={(e)=>{setMessage(e.target.value)}} className="p-2 w-full h-10 text-black rounded-l-2xl bg-green-100 border-none outline-none flex-wrap min-h-10" placeholder="Send a message" type="text" />
                             <button onClick={()=>{handleSend()}} className="bg-emerald-500 rounded-r-2xl w-30 hover:bg-emerald-400 text-white font-medium transition">Send</button>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>

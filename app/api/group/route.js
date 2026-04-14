@@ -58,7 +58,7 @@ export async function GET(){
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const Groups=await Chat.find({isGroup:true,members:new Types.ObjectId(UserId)}).populate("members","name avatar");
+    const Groups=await Chat.find({isGroup:true,members:new Types.ObjectId(UserId)}).populate("members","name avatar")
     return Response.json({Groups})
 
   }catch(err){
