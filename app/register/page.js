@@ -68,7 +68,7 @@ export default function Register() {
                                     <input value={login.password} onChange={(e)=>{setLogin({...login,password:e.target.value})}} className="p-2 h-10 w-70 bg-gray-200  text-black shadow-xl" type="password" placeholder="Password" />
                                     <button onClick={(e)=>{e.preventDefault()
                                         handleLogin()
-                                    }} className="p-2 h-10 w-35 ml-17.5 bg-emerald-700 rounded-full text-white">SIGN IN</button>
+                                    }} className="p-2 h-10 w-35 ml-17.5 bg-emerald-700 rounded-full text-white hover:cursor-pointer">SIGN IN</button>
                                 </form>
                             </div>
                         </div>
@@ -79,7 +79,7 @@ export default function Register() {
                                     <input value={register.name} onChange={(e)=>{setRegister({...register,name:e.target.value})}} className="p-2 h-10 w-70 bg-gray-200  text-black shadow-xl" type="text" placeholder="Username" />
                                     <input value={register.email} onChange={(e)=>{setRegister({...register,email:e.target.value})}} className="p-2 h-10 w-70 bg-gray-200  text-black shadow-xl" type="email" placeholder="Email" />
                                     <input value={register.password} onChange={(e)=>{setRegister({...register,password:e.target.value})}} className="p-2 h-10 w-70 bg-gray-200  text-black shadow-xl" type="password" placeholder="Password" />
-                                    <button onClick={()=>{handleRegister()}} className="p-2 h-10 w-35 ml-17.5 bg-emerald-700 rounded-full text-white">SIGN UP</button>
+                                    <button onClick={()=>{handleRegister()}} className="p-2 h-10 w-35 ml-17.5 bg-emerald-700 rounded-full text-white hover:cursor-pointer">SIGN UP</button>
                                 </form>
                             </div>
                         </div>
@@ -103,7 +103,7 @@ export default function Register() {
 
                             <button
                                 onClick={() => setIsSignIn(!isSignIn)}
-                                className="border border-white p-2 h-10 w-30 rounded-full text-white"
+                                className="border border-white p-2 h-10 w-30 rounded-full text-white hover:cursor-pointer"
                             >
                                 {isSignIn ? "SIGN UP" : "SIGN IN"}
                             </button>

@@ -203,6 +203,12 @@ export default function Dashboard() {
             pusher.disconnect();
         };
         }, [chat]);
+
+    const ref = useRef();
+    
+        useEffect(() => {
+        ref.current.scrollTop = ref.current.scrollHeight;
+        }, [allMessages]);
     
     return (
         <>

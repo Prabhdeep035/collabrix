@@ -21,8 +21,8 @@ export default function Navbar(){
     useEffect(() => {
       fetchUser()
     }, [])
-    
 
+    
     const router=useRouter()
     const handleLogout=async()=>{
         const res=await fetch("/api/auth/logout",{
@@ -46,7 +46,7 @@ export default function Navbar(){
                         }
                     </div>
                 
-                <button onClick={()=>{handleLogout()}} className="h-9 w-30 bg-white text-emerald-600 border rounded-2xl hover:bg-gray-100  font-medium transition">Logout</button>
+                <button onClick={()=>{handleLogout()}} className="h-9 w-30 bg-white text-emerald-600 border rounded-2xl hover:bg-gray-100  font-medium transition cursor-pointer">Logout</button>
             </div>
         </div>
     </>
