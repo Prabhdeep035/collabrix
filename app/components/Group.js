@@ -56,7 +56,7 @@ export default function Group({friends}){
                     <input value={group.name} onChange={(e) => { setGroup({ ...group, name: e.target.value }) }} type="text" placeholder="Enter Group Name..." className="w-full px-4 py-2 rounded-lg 
                                 bg-white/10 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-emerald-400"
                     />
-                    <div className="bg-white p-2 h-30 rounded-2xl flex flex-col overflow-y-auto no-scrollbar scroll-smooth">
+                    <div className="bg-white p-2 h-30 rounded-2xl flex flex-col overflow-y-auto scroll-smooth">
                         {allFriends.length === 0 ?
                             <div className="text-black text-2xl font-bold flex justify-center items-center h-150 ">Send request and make new friends</div> :
                             allFriends.map((friend) => {

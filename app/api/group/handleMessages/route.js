@@ -26,7 +26,7 @@ export async function POST(req){
         const fullMessage = await Message.findById(messageObj._id)
             .populate("sender", "username avatar");
 
-        await pusherServer.trigger(`chatId-${chatId}`, "new-message", fullMessage);
+        await pusherServer.trigger(`private-chatId-${chatId}`, "new-message", fullMessage);
 
         if(messageObj){
             return Response.json({messageObj}) 
@@ -52,6 +52,15 @@ export async function GET(req){
 
         const { searchParams } = new URL(req.url);
         const chatId = searchParams.get("chatId"); 
+
+        const chat=await Chat.findOne({
+                    _id: chatId,
+                    members:UserId
+                });
+        
+        if(!chat){
+            return Response.json({error:"Forbidden"},{status:403});
+        }
 
         const messages=await Message.find({chatId:chatId}).sort({ createdAt: 1 }).populate("sender","username avatar")
         return Response.json({messages})

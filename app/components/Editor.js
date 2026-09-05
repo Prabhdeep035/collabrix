@@ -7,7 +7,7 @@ export default function CodeEditor() {
   return (
     <Editor
       height="500px"
-      defaultLanguage="javascript"
+      defaultLanguage="Python"
       theme="vs-dark"
       onChange={(value) => setCode(value)}
     />
