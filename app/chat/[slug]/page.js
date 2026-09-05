@@ -142,10 +142,11 @@ export default function Dashboard() {
             process.env.NEXT_PUBLIC_PUSHER_KEY,
             {
                 cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+                authEndpoint:"/api/pusher/auth",
             }
         );
 
-        const channel = pusher.subscribe(`chat-${chat._id}`);
+        const channel = pusher.subscribe(`private-chat-${chat._id}`);
 
         channel.bind("new-message", (newMessage) => {
             setAllMessages((prev) => {
@@ -155,7 +156,7 @@ export default function Dashboard() {
         });
 
         return () => {
-            pusher.unsubscribe(`chat-${chat._id}`);
+            pusher.unsubscribe(`private-chat-${chat._id}`);
             pusher.disconnect();
         };
     }, [chat]);

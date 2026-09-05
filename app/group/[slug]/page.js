@@ -144,9 +144,10 @@ export default function Dashboard() {
 
         const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
             cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+            authEndpoint:"/api/pusher/auth",
         });
 
-        const channel = pusher.subscribe(`chatId-${groupChat._id}`);
+        const channel = pusher.subscribe(`private-chatId-${groupChat._id}`);
 
         channel.bind("new-message", (newMessage) => {
             setAllMessages((prev) => {

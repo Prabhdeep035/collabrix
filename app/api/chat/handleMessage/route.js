@@ -31,7 +31,7 @@ export async function POST(req){
         );
 
         await pusherServer.trigger(
-            `chat-${chatId}`,
+            `private-chat-${chatId}`,
             "new-message",
             messageObj
             );
@@ -59,6 +59,15 @@ export async function GET(req){
 
         const { searchParams } = new URL(req.url);
         const chatId = searchParams.get("chatId"); 
+
+        const chat=await Chat.findOne({
+            _id: chatId,
+            members:UserId
+        });
+
+        if(!chat){
+            return Response.json({error:"Forbidden"},{status:403});
+        }
 
         const messages=await Message.find({chatId:chatId}).sort({ createdAt: 1 })
         return Response.json({messages})
