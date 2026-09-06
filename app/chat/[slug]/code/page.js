@@ -311,7 +311,7 @@ export default function Dashboard() {
 
             }
 
-        }, 1000);
+        }, 2000);
 
     }
 

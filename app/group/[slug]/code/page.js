@@ -239,7 +239,7 @@ export default function GroupCode() {
 
             }
 
-        },500);
+        },2000);
     };
 
 
