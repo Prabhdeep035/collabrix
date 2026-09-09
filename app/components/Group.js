@@ -1,5 +1,6 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import toast from "react-hot-toast"
 
 export default function Group({friends}){
 
@@ -11,6 +12,7 @@ export default function Group({friends}){
             group: false,
     })
     const allFriends=friends;      
+    const groupPanelRef = useRef(null)
 
     
     const makeGroup = async () => {
@@ -33,14 +35,26 @@ export default function Group({friends}){
             if (res.ok) {
                 toast.success("Group Created!")
                 setGroup({ name: "", members: [] })
+                setShow({ group: false })
             }
         }
     }
+
+    useEffect(() => {
+        const closeOnOutsidePress = (event) => {
+            if (groupPanelRef.current && !groupPanelRef.current.contains(event.target)) {
+                setShow({ group: false })
+            }
+        }
+
+        document.addEventListener("pointerdown", closeOnOutsidePress)
+        return () => document.removeEventListener("pointerdown", closeOnOutsidePress)
+    }, [])
     
     return (
-        <>
+        <div ref={groupPanelRef}>
             <div
-                className={`absolute right-10 bottom-25 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
+                className={`absolute bottom-25 right-2 z-50 max-h-[calc(100dvh-7rem)] w-[calc(100vw-1rem)] max-w-96 overflow-y-auto rounded-2xl border border-white/10 bg-emerald-900/95 shadow-2xl backdrop-blur-lg transition-all duration-200 ease-out sm:right-10
                             ${show.group
                         ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
 
@@ -87,13 +101,12 @@ export default function Group({friends}){
                     </button>
                 </div>
             </div>
-            <button onClick={() => { setShow({ ...show, group: !show.group }) }} className="h-20 w-20 bottom-2 right-2 absolute rounded-3xl bg-emerald-600 shadow-md flex justify-center items-center 
-                    hover:bg-emerald-400 text-white font-medium transition hover:cursor-pointer">
+            <button onClick={() => { setShow({ ...show, group: !show.group }) }} aria-label="Create group" className="absolute bottom-3 right-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-950/25 transition hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-xl cursor-pointer sm:h-20 sm:w-20">
                 <lord-icon
                     src="https://cdn.lordicon.com/cfoaotmk.json"
                     colors="primary:#000000,secondary:#000000"
                     style={{ width: "70px", height: "70px" }} />
             </button>
-        </>
+        </div>
     )
 }

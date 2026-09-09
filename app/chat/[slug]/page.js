@@ -164,15 +164,15 @@ export default function Dashboard() {
     return (
         <>
             <Navbar />
-            <div className=" bg-emerald-700 flex flex-row h-167 min-w-fit gap-4">
+            <div className="min-h-[calc(100dvh-3.75rem)] bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-800 flex flex-col gap-3 p-3 sm:p-4 lg:h-[calc(100dvh-3.75rem)] lg:flex-row">
 
 
-                <div className="relative w-1/3 bg-gray-100 rounded-t-2xl ml-10 flex flex-col">
+                <div className="relative hidden h-[45dvh] min-h-80 w-full flex-col overflow-hidden rounded-2xl bg-slate-50 shadow-xl shadow-emerald-950/20 lg:flex lg:h-auto lg:w-1/3 lg:min-w-80">
                     <Request/>
                     <div className="m-2 flex p-2 bg-emerald-100 border-none h-10 rounded-2xl">
                         🔍<input onChange={(e) => { setSearch(e.target.value) }} className="p-2 w-full text-black border-none outline-none" type="text" placeholder="Search or start a new chat" />
                     </div>
-                    <div className=" m-4 h-full flex flex-col gap-4 overflow-y-auto no-scrollbar scroll-smooth">
+                    <div className="m-4 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto no-scrollbar scroll-smooth">
                         {allFriends.length === 0 ? <div className="text-black text-2xl font-bold flex justify-center items-center h-[150px] ">Send request and make new friends</div> :
                             allFriends.map((friend) => {
                                 return (
@@ -207,8 +207,11 @@ export default function Dashboard() {
                     </div>
                     <Group friends={allFriends}/>
                 </div>
-                <div className="w-2/3 bg-gray-100 rounded-t-2xl">
-                    <div className="flex gap-5 items-center h-20 bg-emerald-700 rounded-t-2xl mt-3 ml-3 mr-3 shadow-md">
+                <div className="flex min-h-[60dvh] w-full flex-1 flex-col rounded-2xl bg-slate-50 shadow-xl shadow-emerald-950/20 lg:min-h-0">
+                    <div className="flex min-h-20 flex-wrap gap-3 items-center bg-emerald-700 rounded-t-2xl mx-3 mt-3 px-3 py-3 shadow-md">
+                        <button onClick={() => { router.push("/dashboard") }} className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-emerald-700 lg:hidden">
+                            Chats
+                        </button>
                         <div className={`bg-stone-200 h-15 w-15 ml-3 rounded-full ${chatFriend.avatar ? "" : "flex items-center justify-center text-2xl"}`} >
                             {chatFriend.avatar ? <img src={chatFriend.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" />
                                 :
@@ -224,8 +227,8 @@ export default function Dashboard() {
                             </button>
                         </div>
                     </div>
-                    <div className="relative flex flex-col rounded-b-2xl bg-white h-143 ml-3 mr-3 shadow-md">
-                        <div ref={ref} className="h-140 m-2 flex flex-col gap-2 text-black overflow-y-auto no-scrollbar scroll-smooth bg-white p-4">
+                    <div className="relative mx-3 flex min-h-0 flex-1 flex-col rounded-b-2xl bg-white shadow-sm">
+                        <div ref={ref} className="m-2 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto bg-white p-4 text-black no-scrollbar scroll-smooth">
                             {allMessages.length === 0 ? (
                                 <div className="flex flex-col justify-center items-center h-full text-2xl font-bold">
                                     <span>WELCOME</span>
@@ -250,9 +253,9 @@ export default function Dashboard() {
                                 })
                             )}
                         </div>
-                        <form onSubmit={(e) => { e.preventDefault() }} className="m-3 flex mt-auto rounded-2xl shadow-xl border-black border">
-                            <textarea value={message} onChange={(e) => { setMessage(e.target.value) }} className="p-2 w-full h-10 text-black rounded-l-2xl bg-green-100 border-none outline-none flex-wrap min-h-10" placeholder="Send a message" type="text" />
-                            <button onClick={() => { handleSend() }} className="bg-emerald-500 rounded-r-2xl w-30 hover:bg-emerald-400 text-white font-medium transition hover: cursor-pointer">Send</button>
+                        <form onSubmit={(e) => { e.preventDefault() }} className="m-3 mt-auto flex overflow-hidden rounded-xl border border-emerald-200 bg-emerald-50 shadow-sm">
+                            <textarea value={message} onChange={(e) => { setMessage(e.target.value) }} className="min-h-11 w-full resize-none overflow-y-auto bg-transparent p-3 text-sm text-slate-900 outline-none no-scrollbar" placeholder="Write a message..." type="text" />
+                            <button onClick={() => { handleSend() }} className="m-1 rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white transition hover:bg-emerald-500 cursor-pointer">Send</button>
                         </form>
                     </div>
                 </div>

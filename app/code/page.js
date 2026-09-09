@@ -174,7 +174,7 @@ export default function Dashboard() {
                                 )}
                             </div>
                             <form onSubmit={(e) => { e.preventDefault() }} className="m-3 flex mt-auto rounded-2xl shadow-xl border-black border">
-                                <textarea value={message} onChange={(e) => { setMessage(e.target.value) }} className="p-2 w-full h-10 text-black rounded-l-2xl bg-green-100 border-none outline-none flex-wrap min-h-10" placeholder="Send a message" type="text" />
+                                <textarea value={message} onChange={(e) => { setMessage(e.target.value) }} className="p-2 w-full h-10 min-h-10 resize-none overflow-y-auto text-black rounded-l-2xl bg-green-100 border-none outline-none no-scrollbar" placeholder="Send a message" type="text" />
                                 <button onClick={() => { handleSend() }} className="bg-emerald-500 rounded-r-2xl w-30 hover:bg-emerald-400 text-white font-medium transition">Send</button>
                             </form>
                         </div>

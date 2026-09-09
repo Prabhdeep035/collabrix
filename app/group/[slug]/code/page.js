@@ -257,11 +257,11 @@ export default function GroupCode() {
 
     return (
         <>
-            <div className=" bg-emerald-700 flex flex-col min-h-screen min-w-fit ">
+            <div className="min-h-[100dvh] bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-800 flex flex-col overflow-x-hidden lg:h-[100dvh]">
 
-                <div className="flex gap-5 items-center h-20 bg-emerald-600 rounded-t-2xl mt-3 ml-3 mr-3 shadow-md">
+                <div className="flex min-h-20 flex-wrap gap-3 items-center bg-emerald-700 rounded-t-2xl mt-3 mx-3 px-4 py-3 shadow-xl shadow-emerald-950/20">
 
-                    <div className={`bg-white h-15 w-15 ml-3 rounded-full ${groupChat.avatar ? "" : "flex items-center justify-center text-2xl"}`} >
+                    <div className={`bg-white h-15 w-15 rounded-full shrink-0 ${groupChat.avatar ? "" : "flex items-center justify-center text-2xl"}`} >
 
                         {groupChat.avatar ? <img src={groupChat.avatar} className="w-full h-full object-cover rounded-full" alt="avatar" />
                             :
@@ -269,7 +269,7 @@ export default function GroupCode() {
 
                     </div>
 
-                    <h1 className="text-2xl font-serif">@{groupChat.name}</h1>
+                    <h1 className="min-w-0 break-words text-xl sm:text-2xl font-serif">@{groupChat.name}</h1>
 
                     <div className="ml-auto w-20">
 
@@ -289,15 +289,15 @@ export default function GroupCode() {
 
                 </div>
 
-                <div className="flex flex-row">
+                <div className="flex flex-1 min-h-0 flex-col gap-3 px-3 pb-3 lg:flex-row">
 
-                    <div className="relative w-[25%] bg-gray-100 ml-3 border-r border-gray-700">
+                    <div className="relative flex h-[45dvh] min-h-72 w-full flex-col overflow-hidden rounded-2xl bg-slate-50 shadow-xl shadow-emerald-950/20 lg:h-auto lg:w-1/3 lg:min-w-80">
 
-                        <div className="relative flex flex-col rounded-b-2xl bg-white h-full ml-3 mr-3 shadow-md">
+                        <div className="relative flex min-h-0 flex-1 flex-col rounded-2xl bg-white shadow-sm">
 
                             <div
                                 ref={ref}
-                                className="h-140 m-2 flex flex-col gap-2 text-black overflow-y-auto no-scrollbar scroll-smooth bg-white p-4"
+                                className="m-2 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto bg-white p-4 text-black no-scrollbar scroll-smooth"
                             >
 
                                 {allMessages.length === 0 ? (
@@ -365,20 +365,20 @@ export default function GroupCode() {
 
                             <form
                                 onSubmit={(e)=>{e.preventDefault()}}
-                                className="m-3 flex mt-auto rounded-2xl shadow-xl border-black border"
+                                className="m-3 mt-auto flex overflow-hidden rounded-xl border border-emerald-200 bg-emerald-50 shadow-sm"
                             >
 
                                 <textarea
                                     value={message}
                                     onChange={(e)=>{setMessage(e.target.value)}}
-                                    className="p-2 w-full h-10 text-black rounded-l-2xl bg-green-100 border-none outline-none flex-wrap min-h-10"
-                                    placeholder="Send a message"
+                                    className="h-11 min-h-11 w-full resize-none overflow-y-auto bg-transparent p-3 text-sm text-slate-900 outline-none no-scrollbar"
+                                    placeholder="Write a message..."
                                     type="text"
                                 />
 
                                 <button
                                     onClick={()=>{handleSend()}}
-                                    className="bg-emerald-500 rounded-r-2xl w-30 hover:bg-emerald-400 text-white font-medium transition hover:cursor-pointer"
+                                    className="m-1 rounded-lg bg-emerald-600 px-5 text-sm font-semibold text-white transition hover:bg-emerald-500 hover:cursor-pointer"
                                 >
                                     Send
                                 </button>
@@ -390,13 +390,13 @@ export default function GroupCode() {
                     </div>
 
 
-                    <div className="w-[75%] bg-gray-100 mr-3 border">
+                    <div className="flex min-h-[60dvh] w-full flex-1 flex-col overflow-hidden rounded-2xl bg-slate-50 shadow-xl shadow-emerald-950/20 lg:min-h-0">
 
-                        <div className="relative flex flex-col rounded-b-2xl  h-full ml-3 mr-3 shadow-md no-scrollbar gap-1">
+                        <div className="relative flex min-h-0 flex-1 flex-col rounded-2xl shadow-sm no-scrollbar gap-1">
 
-                            <div className="h-10 w-full flex bg-green-300 text-white border border-gray-400 mt-1">
+                            <div className="min-h-14 w-full flex flex-wrap items-center gap-2 rounded-t-2xl bg-slate-900 px-3 py-2 text-white">
 
-                                <h1 className="text-2xl font-bold flex items-center ml-2">
+                                <h1 className="text-lg sm:text-2xl font-bold flex items-center">
                                     Code here
                                 </h1>
 
@@ -408,7 +408,7 @@ export default function GroupCode() {
                                                 ? setCodeTheme("dark")
                                                 : setCodeTheme("light")
                                         }}
-                                        className={`h-5 b-10 ${
+                                        className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
                                             codeTheme==="light"
                                                 ?"bg-white text-black"
                                                 :"bg-black text-white"
@@ -418,7 +418,7 @@ export default function GroupCode() {
                                     </button>
 
                                     <select
-                                        className="bg-white mr-3 text-black"
+                                        className="mr-1 rounded-lg bg-white px-2 py-1.5 text-sm font-medium text-slate-900"
                                         value={language}
                                         onChange={(e) => setLanguage(e.target.value)}
                                     >
@@ -445,10 +445,10 @@ export default function GroupCode() {
 
                             </div>
 
-                            <div className="h-147 rounded-b-2xl flex flex-col gap-2 text-black overflow-y-auto bg-white no-scrollbar">
+                            <div className="min-h-0 flex-1 rounded-b-2xl flex flex-col gap-2 overflow-hidden bg-white text-black no-scrollbar">
 
                                 <Editor
-                                    height="900px"
+                                    height="100%"
                                     language={language}
                                     value={code}
                                     theme={`vs-${codeTheme}`}

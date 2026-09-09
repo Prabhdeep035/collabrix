@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: green;
+  --background: #f3f7f5;
+  --foreground: #10231b;
 }
 
 @theme inline {
@@ -12,17 +12,21 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 3px solid rgb(52 211 153 / 0.55);
+  outline-offset: 2px;
 }
 
 

@@ -446,7 +446,7 @@ export default function Dashboard() {
                                     onChange={(e) => {
                                         setMessage(e.target.value)
                                     }}
-                                    className="p-2 w-full h-10 text-black rounded-l-2xl bg-green-100 border-none outline-none flex-wrap min-h-10"
+                                    className="h-10 min-h-10 w-full resize-none overflow-y-auto rounded-l-2xl border-none bg-green-100 p-2 text-black outline-none no-scrollbar"
                                     placeholder="Send a message"
                                     type="text"
                                 />

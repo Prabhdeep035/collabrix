@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
+import toast from "react-hot-toast"
 
 export default function Request() {
 
@@ -10,6 +11,7 @@ export default function Request() {
     })
     const [friend, setFriend] = useState("")
     const [requests, setRequests] = useState([])
+    const requestPanelRef = useRef(null)
 
 
     const sendRequest = async () => {
@@ -25,12 +27,13 @@ export default function Request() {
             const data = await res.json()
             toast.success("Request sent successfully!")
             setRequests(data.newReq)
+            setShow({ add: false, notify: false })
         }
 
     }
 
     const handleAccept = async (id) => {
-        const res = await fetch("api/request/accept", {
+        const res = await fetch("/api/request/accept", {
             method: "POST",
             credentials: "include",
             body: JSON.stringify({ id: id }),
@@ -40,11 +43,12 @@ export default function Request() {
         })
         if (res.ok) {
             toast.success("Request Accepted")
+            setShow({ add: false, notify: false })
         }
     }
 
     const handleReject = async (id) => {
-        const res = await fetch("api/request/reject", {
+        const res = await fetch("/api/request/reject", {
             method: "POST",
             credentials: "include",
             body: JSON.stringify({ id: id }),
@@ -54,6 +58,7 @@ export default function Request() {
         })
         if (res.ok) {
             toast.error("Request Rejected")
+            setShow({ add: false, notify: false })
         }
 
     }
@@ -73,14 +78,28 @@ export default function Request() {
         fetchRequest()
     }, [])
 
+    useEffect(() => {
+        const closeOnOutsidePress = (event) => {
+            if (requestPanelRef.current && !requestPanelRef.current.contains(event.target)) {
+                setShow({ add: false, notify: false })
+            }
+        }
+
+        document.addEventListener("pointerdown", closeOnOutsidePress)
+        return () => document.removeEventListener("pointerdown", closeOnOutsidePress)
+    }, [])
+
     return (
-        <>
-            <div className="flex">
-                <h1 className="p-2 mt-3 font-semibold text-2xl text-black">Chats</h1>
+        <div ref={requestPanelRef}>
+            <div className="flex items-center border-b border-slate-200 px-3 py-3">
+                <div>
+                    <h1 className="text-xl font-bold text-slate-900">Chats</h1>
+                    <p className="mt-0.5 text-xs text-slate-500">Your conversations</p>
+                </div>
                 <button onClick={() => {
                     setShow({ ...show, add: false, notify: !show.notify })
 
-                }} className="ml-auto m-4 text-black h-8 rounded-2xl shadow-md hover:cursor-pointer">
+                }} aria-label="Send friend request" className="ml-auto flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-black shadow-sm transition hover:bg-emerald-100 hover:shadow-md cursor-pointer">
                     <lord-icon
                         src="https://cdn.lordicon.com/fqbvgezn.json"
                         colors="primary:#121331,secondary:#109121"
@@ -88,7 +107,7 @@ export default function Request() {
                 </button>
                 <button onClick={() => {
                     setShow({ ...show, add: !show.add, notify: false })
-                }} className=" m-4 text-black h-8 rounded-2xl shadow-md hover:cursor-pointer">
+                }} aria-label="Manage friend requests" className="ml-2 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-black shadow-sm transition hover:bg-emerald-100 hover:shadow-md cursor-pointer">
                     <lord-icon
                         src="https://cdn.lordicon.com/nvsfzbop.json"
                         colors="primary:#121331,secondary:#109121"
@@ -97,7 +116,7 @@ export default function Request() {
             </div>
 
             <div
-                className={`absolute z-50 right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
+                className={`absolute z-50 right-2 top-20 max-h-[calc(100dvh-6rem)] w-[calc(100vw-1rem)] max-w-96 overflow-y-auto rounded-2xl border border-white/10 bg-emerald-900/95 shadow-2xl backdrop-blur-lg transition-all duration-200 ease-out sm:right-10
                                         ${show.add
                         ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
                 <div className="px-6 py-4 border-b border-white/10">
@@ -130,7 +149,7 @@ export default function Request() {
 
             </div>
             <div
-                className={`absolute z-50 right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
+                className={`absolute z-50 right-2 top-20 max-h-[calc(100dvh-6rem)] w-[calc(100vw-1rem)] max-w-96 overflow-y-auto rounded-2xl border border-white/10 bg-emerald-900/95 shadow-2xl backdrop-blur-lg transition-all duration-200 ease-out sm:right-10
                                         ${show.notify
                         ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
 
@@ -153,6 +172,6 @@ export default function Request() {
                     </button>
                 </div>
             </div>
-        </>
+        </div>
     )
 }

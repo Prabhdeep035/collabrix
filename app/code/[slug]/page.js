@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import Navbar from "../../components/Navbar"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import Pusher from "pusher-js";
@@ -28,6 +28,7 @@ export default function Dashboard() {
     const [chat,setChat]=useState([])
     const [message,setMessage]=useState("")
     const [allMessages,setAllMessages]=useState([])
+    const requestPanelRef = useRef(null)
 
     const sendRequest = async () => {
         const res = await fetch("/api/request", {
@@ -42,13 +43,14 @@ export default function Dashboard() {
             const data = await res.json()
             toast.success("Request sent successfully!")
             setRequests(data.newReq)
+            setShow((current) => ({ ...current, add: false, notify: false }))
         }
         
     }
 
     
     const handleAccept=async (id)=>{
-        const res=await fetch("api/request/accept",{
+        const res=await fetch("/api/request/accept",{
             method:"POST",
             credentials:"include",
             body:JSON.stringify({id:id}),
@@ -58,11 +60,12 @@ export default function Dashboard() {
         })
         if(res.ok){
             toast.success("Request Accepted")
+            setShow((current) => ({ ...current, add: false, notify: false }))
         }
     }
     
     const handleReject=async (id)=>{
-        const res=await fetch("api/request/reject",{
+        const res=await fetch("/api/request/reject",{
             method:"POST",
             credentials:"include",
             body:JSON.stringify({id:id}),
@@ -72,6 +75,7 @@ export default function Dashboard() {
         })
         if(res.ok){
             toast.error("Request Rejected")
+            setShow((current) => ({ ...current, add: false, notify: false }))
         }
         
     }
@@ -178,6 +182,17 @@ export default function Dashboard() {
         fetchAllMessages()
     },[chat])
 
+    useEffect(() => {
+        const closeOnOutsidePress = (event) => {
+            if (requestPanelRef.current && !requestPanelRef.current.contains(event.target)) {
+                setShow((current) => ({ ...current, add: false, notify: false }))
+            }
+        }
+
+        document.addEventListener("pointerdown", closeOnOutsidePress)
+        return () => document.removeEventListener("pointerdown", closeOnOutsidePress)
+    }, [])
+
     // pusher 
     useEffect(() => {
         if (!chat?._id) return;
@@ -213,10 +228,11 @@ export default function Dashboard() {
     return (
         <>
             <Navbar />
-            <div className=" bg-emerald-700 flex flex-row h-188 min-w-fit gap-4">
+            <div className="min-h-[calc(100dvh-3.75rem)] bg-emerald-700 p-3 lg:flex lg:h-[calc(100dvh-3.75rem)] lg:gap-4">
 
 
-                <div className="relative w-1/3 bg-gray-100 rounded-t-2xl ml-10">
+                <div className="relative hidden h-full w-1/3 min-w-80 flex-col rounded-2xl bg-gray-100 lg:flex">
+                    <div ref={requestPanelRef}>
                     <div className="flex">
                         <h1 className="p-2 mt-3 font-semibold text-2xl text-black">Chats</h1>
                         <button onClick={() => {
@@ -239,7 +255,7 @@ export default function Dashboard() {
                     </div>
 
                     <div
-                        className={`absolute right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
+                        className={`absolute right-2 top-20 w-[calc(100vw-1rem)] max-w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out sm:right-10
                             ${show.add
                                 ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
                         <div className="px-6 py-4 border-b border-white/10">
@@ -272,7 +288,7 @@ export default function Dashboard() {
                         
                     </div>
                     <div
-                        className={`absolute right-10 top-20 w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out
+                        className={`absolute right-2 top-20 w-[calc(100vw-1rem)] max-w-96 rounded-2xl bg-emerald-800/90 backdrop-blur-lg shadow-md border border-white/10transform transition-all duration-500 ease-in-out sm:right-10
                             ${show.notify
                                 ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-5 pointer-events-none"}`}>
                         
@@ -295,10 +311,11 @@ export default function Dashboard() {
                             </button>
                         </div>
                     </div>
+                    </div>
                     <div className="m-2 flex p-2 bg-emerald-100 border-none h-10 rounded-2xl">
                         🔍<input className="p-2 w-full text-black border-none outline-none" type="text" placeholder="Search or start a new chat" />
                     </div>
-                    <div className=" m-4 flex gap-4 flex-col">
+                    <div className="m-4 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto no-scrollbar">
                         {allFriends.length===0?<div className="text-black text-2xl font-bold flex justify-center items-center h-150 ">Send request and make new friends</div>:
                             allFriends.map((friend)=>{
                                 return(
@@ -316,8 +333,9 @@ export default function Dashboard() {
                             })}
                     </div>
                 </div>
-                <div className="w-2/3 bg-gray-100 rounded-t-2xl">
-                    <div className="flex gap-5 items-center h-20 bg-emerald-700 rounded-t-2xl mt-3 ml-3 mr-3 shadow-md">
+                <div className="flex min-h-[calc(100dvh-5.25rem)] w-full flex-1 flex-col rounded-2xl bg-gray-100 lg:min-h-0">
+                    <div className="flex min-h-20 flex-wrap items-center gap-3 rounded-t-2xl bg-emerald-700 px-3 py-3 shadow-md">
+                        <button onClick={() => { router.push(`/chat/${friendId}`) }} className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-emerald-700 lg:hidden">Chat</button>
                         <div className= {`bg-white h-15 w-15 ml-3 rounded-full ${chatFriend.avatar?"":"flex items-center justify-center text-2xl"}`} >
                             {chatFriend.avatar?<img src={chatFriend.avatar} className="w-full h-full object-cover rounded-full" alt="avatar"/>
                             : 
@@ -325,8 +343,8 @@ export default function Dashboard() {
                         </div>
                         <h1 className="text-xl ">{chatFriend.username}</h1>
                     </div>
-                    <div className="relative flex flex-col rounded-b-2xl bg-white h-160 ml-3 mr-3 shadow-md">
-                        <div className="h-140 m-2 flex flex-col gap-2 text-black overflow-y-auto bg-white p-4">
+                    <div className="relative flex min-h-0 flex-1 flex-col rounded-b-2xl bg-white mx-3 shadow-md">
+                        <div className="m-2 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto bg-white p-4 text-black">
                            <Editor/>
                         </div>
                     </div>
